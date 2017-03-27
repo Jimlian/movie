@@ -1,14 +1,21 @@
 class MoviesController < ApplicationController
+  before_action :authenticate_user! , only: [:new, :create, :eidit, :update, :destroy]
+
   def index
     @movies = Movie.all
   end
 
   def show
     @movie = Movie.find(params[:id])
+    @posts = @movie.posts
   end
 
   def edit
    @movie = Movie.find(params[:id])
+
+   if current_user != @movie.user
+     redirect_to root_path, alert: "You have no permission."
+   end
  end
 
   def new
@@ -17,8 +24,13 @@ class MoviesController < ApplicationController
 
   def create
     @movie = Movie.new(movie_params)
-    @movie.save
+    @movie.user = current_user
+
+    if @movie.save
     redirect_to movies_path
+  else
+    render :new
+  end
   end
 
   def update
@@ -35,7 +47,7 @@ class MoviesController < ApplicationController
     flash[:alert] = " 影片已删除"
     redirect_to movies_path
   end
-  
+
 
 
   private
