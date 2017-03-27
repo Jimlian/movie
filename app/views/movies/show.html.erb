@@ -1,5 +1,16 @@
 <div class="col-md-12">
   <div class="movie">
+
+    <span class="pull-right">
+      <% if current_user && current_user.is_member_of?(@movie) %>
+       <lable class= "label label-success">收藏</label>
+         <%= link_to("取消收藏", quit_movie_path(@movie), method: :post, class: "btn btn-default") %>
+         <% else %>
+         <label class="label label-warning">请先收藏</label>
+           <%= link_to("收藏", join_movie_path(@movie), method: :post, class: "btn btn-default") %>
+         <% end %>
+       </span>
+
     <%= link_to("新增评论", new_movie_post_path(@movie), class: "btn btn-default pull-right")%>
     <% if current_user && current_user == @movie.user %>
     <%=link_to("Edit", edit_movie_path(@movie), class: "btn btn-primary pull-right")%>
